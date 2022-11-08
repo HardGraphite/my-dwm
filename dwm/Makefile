@@ -27,10 +27,13 @@ clean:
 
 install: all
 	mkdir -p ${DESTDIR}${PREFIX}/bin
-	cp -f dwm ${DESTDIR}${PREFIX}/bin
+	${STRIP} dwm -o ${DESTDIR}${PREFIX}/bin/dwm
 	chmod 755 ${DESTDIR}${PREFIX}/bin/dwm
+	mkdir -p ${DESTDIR}${XSESSIONDESKTOPPREFIX}
+	cp -f dwm.desktop ${DESTDIR}${XSESSIONDESKTOPPREFIX}
 
 uninstall:
 	rm -f ${DESTDIR}${PREFIX}/bin/dwm
+	rm -f ${DESTDIR}${XSESSIONDESKTOPPREFIX}/dwm.desktop
 
 .PHONY: all options clean install uninstall
