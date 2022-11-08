@@ -1,13 +1,19 @@
+SUBDIR = dwm statusbar
+
+define foreach_subdir
+	@for __dir in ${SUBDIR}; do make -C $$__dir ${1}; done
+endef
+
 all:
-	make -C dwm
+	$(call foreach_subdir,)
 
 clean:
-	make -C dwm clean
+	$(call foreach_subdir,clean)
 
 install:
-	make -C dwm install
+	$(call foreach_subdir,install)
 
 uninstall:
-	make -C dwm uninstall
+	$(call foreach_subdir,uninstall)
 
 .PHONY: all dwm clean install uninstall
