@@ -1,0 +1,8 @@
+.*
+!.editorconfig
+!.git*
+
+*.d
+*.o
+
+dwm/dwm
