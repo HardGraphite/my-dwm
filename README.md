@@ -11,3 +11,5 @@ with which I can set up a usable GUI environment on Linux.
 (dwm-autostart-20210120-cb3f58a.diff),
 make dwm run "~/.dwm/autostart_blocking.sh" and "~/.dwm/autostart.sh &"
 before entering the handler loop.
+- [systray](https://dwm.suckless.org/patches/systray/)
+(dwm-systray-6.3.diff), a simple system tray implementation.
