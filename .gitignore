@@ -2,6 +2,10 @@
 !.editorconfig
 !.git*
 
+*.diff
+*.orig
+*.rej
+
 *.d
 *.o
 
