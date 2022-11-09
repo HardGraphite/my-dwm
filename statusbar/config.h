@@ -20,7 +20,7 @@
 
 #define MOD_BATTERY_FORMAT             "%s%02u%%", status_icon, percentage
 #define MOD_BATTERY_ICON_PLUGGED       "\uf1e6"
-#define MOD_BATTERY_ICON_CHARGING      "\uf1e6"
+#define MOD_BATTERY_ICON_CHARGING      "\u26a1"
 #define MOD_BATTERY_ICON_RAMP_ARR      {"\uf244", "\uf243", "\uf242", "\uf241", "\uf240"}
 #define MOD_BATTERY_FILE_FULL          "/sys/class/power_supply/BAT0/energy_full"
 #define MOD_BATTERY_FILE_NOW           "/sys/class/power_supply/BAT0/energy_now"
