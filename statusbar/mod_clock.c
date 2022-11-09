@@ -1,14 +1,15 @@
 #include <time.h>
 
+#include "config.h"
 #include "statusbar.h"
 
-void mod_clock(BarModuleContext *ctx, BarModuleArg strftime_format)
+void mod_clock(BarModuleContext *ctx)
 {
 	const struct tm *const tm = localtime(&(time_t){time(NULL)});
 
-	char buffer[64];
-	if (strftime(buffer, sizeof buffer, strftime_format.s, tm))
-		module_string(ctx, NULL, buffer);
+	char time_str[64];
+	if (strftime(time_str, sizeof time_str, MOD_CLOCK_TIME_FMT, tm))
+		module_string(ctx, MOD_CLOCK_FORMAT);
 	else
 		module_string(ctx, NULL, asctime(tm));
 

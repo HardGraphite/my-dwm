@@ -59,3 +59,13 @@ size_t u8str_charlen(const char *s)
 		return 4;
 	return 0;
 }
+
+const char *ramp_select(
+	const char *const ramp_arr[], size_t ramp_arr_len, unsigned int percentage)
+{
+	return ramp_arr[
+		percentage < 100 ?
+			percentage / (100 / (unsigned int)ramp_arr_len) :
+			ramp_arr_len - 1
+	];
+}

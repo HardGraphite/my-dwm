@@ -10,7 +10,7 @@ LIBS = -L${X11LIB} -lX11
 
 # flags
 CPPFLAGS = -D_DEFAULT_SOURCE -D_BSD_SOURCE -D_POSIX_C_SOURCE=200809L -DNDEBUG
-CFLAGS   = -std=c99 -pedantic -Wall -Wno-deprecated-declarations -Os -flto ${INCS} ${CPPFLAGS}
+CFLAGS   = -std=c99 -Wall -Wextra -Wpedantic -Os -flto ${INCS} ${CPPFLAGS}
 LDFLAGS  = ${LIBS} -flto
 
 # Solaris

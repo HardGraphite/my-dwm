@@ -10,10 +10,9 @@
 #include <unistd.h>
 #include <X11/Xlib.h>
 
-#include "util.h"
-
-#include "mods.h"
 #include "config.h"
+#include "mods.h"
+#include "util.h"
 
 /* Context of a status bar module. */
 struct BarModuleContext {
@@ -22,10 +21,16 @@ struct BarModuleContext {
 	char string[MOD_MAXLEN];
 };
 
+/* Definition of a status bar module. */
+typedef struct BarModuleDef {
+	void (*update)(BarModuleContext *); /* Update callback function. */
+	unsigned int interval; /* Update interval (in sec). */
+} BarModuleDef;
+
 void module_interval(BarModuleContext *ctx, unsigned int n_sec)
 {
 	if (n_sec) {
-		const unsigned int n_ticks = n_sec / TICK_TIME;
+		const unsigned int n_ticks = n_sec / BAR_TICK_TIME;
 		ctx->total_ticks = n_ticks ? n_ticks : 1;
 	} else {
 		ctx->total_ticks = 0;
@@ -54,19 +59,19 @@ void module_string(BarModuleContext *ctx, const char *fmt, ...)
 	va_end(ap);
 }
 
-static BarModuleContext modctx[sizeof moddefs / sizeof moddefs[0]];
+static const BarModuleDef moddefs[] = BAR_MOD_DEF_LIST;
+static BarModuleContext modctx[array_length(moddefs)];
+static const char modsep[] = BAR_MODE_SEP;
 static char bar_buf[BAR_MAXLEN];
 static int bar_stop;
 
 static void bar_init(void)
 {
-	const size_t modcnt = sizeof moddefs / sizeof moddefs[0];
-
-	for (size_t i = 0; i < modcnt; i++) {
+	for (size_t i = 0; i < array_length(moddefs); i++) {
 		const BarModuleDef *const def = &moddefs[i];
 		BarModuleContext *const ctx = &modctx[i];
 		module_interval(ctx, def->interval);
-		def->update(ctx, def->argument);
+		def->update(ctx);
 	}
 
 	bar_stop = 0;
@@ -74,29 +79,21 @@ static void bar_init(void)
 
 static void bar_update(Display *disp, Window root_win)
 {
-	const size_t modcnt = sizeof moddefs / sizeof moddefs[0];
 	char *bar_buf_pos = bar_buf;
 	char *const bar_buf_end = bar_buf + sizeof bar_buf - 1;
-	for (size_t i = 0; i < modcnt; i++) {
-		const BarModuleDef *const def = &moddefs[i];
+	for (size_t i = 0; i < array_length(modctx); i++) {
 		BarModuleContext *const ctx = &modctx[i];
 
 		if (ctx->rest_ticks) {
 			ctx->rest_ticks--;
 		} else if (ctx->total_ticks) {
-			def->update(ctx, def->argument);
+			moddefs[i].update(ctx);
 			ctx->rest_ticks = ctx->total_ticks;
 		}
 
 		if (i) {
 			bar_buf_pos += str_copy(
 				bar_buf_pos, bar_buf_end - bar_buf_pos, modsep, strlen(modsep));
-		}
-
-		if (def->prefix) {
-			bar_buf_pos += str_copy(
-				bar_buf_pos, bar_buf_end - bar_buf_pos,
-				def->prefix, strlen(def->prefix));
 		}
 
 		bar_buf_pos += str_copy(
@@ -118,7 +115,7 @@ static void bar_update(Display *disp, Window root_win)
 
 static void bar_wait(void)
 {
-	sleep(TICK_TIME);
+	sleep(BAR_TICK_TIME);
 }
 
 static void bar_terminate(int sig)
