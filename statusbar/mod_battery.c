@@ -58,7 +58,7 @@ void mod_battery(BarModuleContext *ctx)
 	const char *const status_icon =
 		bs.charging ? icon_charging :
 		bs.plugged  ? icon_plugged  :
-		ramp_select(icon_ramp_arr, array_length(icon_ramp_arr), percentage);
+		ramp_select(icon_ramp_arr, array_length(icon_ramp_arr), percentage, 100);
 	module_string(ctx, MOD_BATTERY_FORMAT);
 
 	unsigned int new_interval;

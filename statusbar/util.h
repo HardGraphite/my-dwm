@@ -17,10 +17,11 @@ long long read_file_as_ll(const char *path, int base);
 size_t str_copy(char *dest, size_t dest_sz, const char *src, size_t src_sz);
 
 /* Get number of bytes in a UTF-8 character. If it is invalid, return 0. */
-size_t u8str_charlen(const char *s);
+__attribute__((pure)) size_t u8str_charlen(const char *s);
 
-/* Select ramp string from an array according to the percentage (0~100). */
-const char *ramp_select(
-	const char *const ramp_arr[], size_t ramp_arr_len, unsigned int percentage);
+/* Select ramp string from an array according to `val` (0 ~ `val_max`). */
+__attribute__((pure)) const char *ramp_select(
+	const char *const ramp_arr[], size_t ramp_arr_len,
+	unsigned int val, unsigned int val_max);
 
 #endif /* UTIL_H */

@@ -45,7 +45,7 @@ size_t str_copy(char *dest, size_t dest_sz, const char *src, size_t src_sz)
 	return src_sz;
 }
 
-size_t u8str_charlen(const char *s)
+__attribute__((pure)) size_t u8str_charlen(const char *s)
 {
 	const unsigned char byte_1 = (unsigned char)*s;
 	assert(byte_1);
@@ -60,12 +60,13 @@ size_t u8str_charlen(const char *s)
 	return 0;
 }
 
-const char *ramp_select(
-	const char *const ramp_arr[], size_t ramp_arr_len, unsigned int percentage)
+__attribute__((pure)) const char *ramp_select(
+	const char *const ramp_arr[], size_t ramp_arr_len,
+	unsigned int val, unsigned int val_max)
 {
 	return ramp_arr[
-		percentage < 100 ?
-			percentage / (100 / (unsigned int)ramp_arr_len) :
+		val < val_max ?
+			val / (val_max / (unsigned int)ramp_arr_len) :
 			ramp_arr_len - 1
 	];
 }
