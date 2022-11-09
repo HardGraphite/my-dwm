@@ -16,6 +16,9 @@ long long read_file_as_ll(const char *path, int base);
 /* Simalir to `strncpy()`, but will not append NUL and will return copied size. */
 size_t str_copy(char *dest, size_t dest_sz, const char *src, size_t src_sz);
 
+/* Calculate string hash code. */
+__attribute__((pure)) size_t str_hash(const char *str, size_t len);
+
 /* Get number of bytes in a UTF-8 character. If it is invalid, return 0. */
 __attribute__((pure)) size_t u8str_charlen(const char *s);
 

@@ -63,6 +63,8 @@ static const BarModuleDef moddefs[] = BAR_MOD_DEF_LIST;
 static BarModuleContext modctx[array_length(moddefs)];
 static const char modsep[] = BAR_MODE_SEP;
 static char bar_buf[BAR_MAXLEN];
+static size_t prev_bar_len;
+static size_t prev_bar_hash;
 static int bar_stop;
 
 static void bar_init(void)
@@ -74,6 +76,9 @@ static void bar_init(void)
 		def->update(ctx);
 	}
 
+	bar_buf[0] = '\0';
+	prev_bar_len = 0;
+	prev_bar_hash = str_hash(bar_buf, prev_bar_len);
 	bar_stop = 0;
 }
 
@@ -101,6 +106,13 @@ static void bar_update(Display *disp, Window root_win)
 			ctx->string, strlen(ctx->string));
 	}
 	*bar_buf_pos = '\0';
+
+	const size_t bar_len = bar_buf_pos - bar_buf;
+	const size_t bar_hash = str_hash(bar_buf, bar_len);
+	if (bar_len == prev_bar_len && bar_hash == prev_bar_hash)
+		return;
+	prev_bar_len = bar_len;
+	prev_bar_hash = bar_hash;
 
 	if (disp) {
 		if (XStoreName(disp, root_win, bar_buf) < 0) {

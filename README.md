@@ -18,4 +18,4 @@ before entering the handler loop.
 
 ## status bar
 
-A status bar for dwm, inspired by [this page](https://dwm.suckless.org/status_monitor/).
+A status bar for dwm.

@@ -45,6 +45,17 @@ size_t str_copy(char *dest, size_t dest_sz, const char *src, size_t src_sz)
 	return src_sz;
 }
 
+__attribute__((pure)) size_t str_hash(const char *str, size_t len)
+{
+	size_t hash = 5381;
+	int c;
+
+	while ((c = *str++) != '\0' && len-- > 0)
+		hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
+
+	return hash;
+}
+
 __attribute__((pure)) size_t u8str_charlen(const char *s)
 {
 	const unsigned char byte_1 = (unsigned char)*s;
