@@ -1,6 +1,7 @@
 #include "statusbar.h"
 
 #include <signal.h>
+#include <stdbool.h>
 #include <stdarg.h>
 #include <stddef.h>
 #include <stdio.h>
@@ -65,7 +66,8 @@ static const char modsep[] = BAR_MODE_SEP;
 static char bar_buf[BAR_MAXLEN];
 static size_t prev_bar_len;
 static size_t prev_bar_hash;
-static int bar_stop;
+static bool bar_force_update;
+static bool bar_stop;
 
 static void bar_init(void)
 {
@@ -79,21 +81,25 @@ static void bar_init(void)
 	bar_buf[0] = '\0';
 	prev_bar_len = 0;
 	prev_bar_hash = str_hash(bar_buf, prev_bar_len);
-	bar_stop = 0;
+	bar_force_update = false;
+	bar_stop = false;
 }
 
 static void bar_update(Display *disp, Window root_win)
 {
+	const bool force_update = bar_force_update;
+	bar_force_update = false;
+
 	char *bar_buf_pos = bar_buf;
 	char *const bar_buf_end = bar_buf + sizeof bar_buf - 1;
 	for (size_t i = 0; i < array_length(modctx); i++) {
 		BarModuleContext *const ctx = &modctx[i];
 
-		if (ctx->rest_ticks) {
-			ctx->rest_ticks--;
-		} else if (ctx->total_ticks) {
+		if (force_update || (ctx->rest_ticks == 0 && ctx->total_ticks)) {
 			moddefs[i].update(ctx);
 			ctx->rest_ticks = ctx->total_ticks;
+		} else {
+			ctx->rest_ticks--;
 		}
 
 		if (i) {
@@ -130,17 +136,24 @@ static void bar_wait(void)
 	sleep(BAR_TICK_TIME);
 }
 
-static void bar_terminate(int sig)
+static void bar_sighandler_terminate(int sig)
 {
 	unused_var(sig);
-	bar_stop = 1;
+	bar_stop = true;
+}
+
+static void bar_sighandler_update(int sig)
+{
+	unused_var(sig);
+	bar_force_update = true;
 }
 
 static void init(void)
 {
 	nice(19);
-	signal(SIGINT, bar_terminate);
-	signal(SIGTERM, bar_terminate);
+	signal(SIGINT, bar_sighandler_terminate);
+	signal(SIGTERM, bar_sighandler_terminate);
+	signal(SIGUSR1, bar_sighandler_update);
 }
 
 static void run(Display *disp)
