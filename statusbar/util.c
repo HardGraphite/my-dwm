@@ -1,11 +1,55 @@
 #include "util.h"
 
 #include <assert.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include <fcntl.h>
+#include <sys/wait.h>
 #include <unistd.h>
+
+int start_process(const char *prog, char *const argv[])
+{
+	const pid_t pid = vfork();
+	if (pid == 0) {
+		execvp(prog, argv);
+		_exit(EXIT_FAILURE);
+	} else {
+		assert(pid > 0 || pid == -1);
+		return pid;
+	}
+}
+
+int send_notification(
+	const char *summary, const char *body, int urgency, unsigned int timeout)
+{
+	/* Call gdbus instead of using GIO, to avoid linking various libraries. */
+
+	char hint_str[32];
+	char timeout_str[16];
+	snprintf(hint_str, sizeof hint_str, "{\"urgency\":<%i>}", urgency);
+	snprintf(timeout_str, sizeof timeout_str, "%u", timeout);
+
+	const char *const argv[] = {
+		"gdbus", "call", "--session",
+		"--dest=org.freedesktop.Notifications",
+		"--object-path=/org/freedesktop/Notifications",
+		"--method=org.freedesktop.Notifications.Notify",
+		"Status Bar" /* app_name */, "0" /* replaces_id */, "" /* app_icon */,
+		summary, body, "[]" /* actions */, hint_str, timeout_str,
+		NULL
+	};
+
+	const pid_t pid = start_process(argv[0], (char *const *)argv);
+	if (pid == -1)
+		return -1;
+	int status;
+	assert(pid > 0);
+	if (waitpid(pid, &status, 0) != pid)
+		return -1;
+	return WIFEXITED(status) ? WEXITSTATUS(status) : -1;
+}
 
 size_t read_file(const char *path, void *buf, size_t buf_sz)
 {

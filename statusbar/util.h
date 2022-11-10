@@ -7,6 +7,12 @@
 
 #define array_length(ARR) (sizeof (ARR) / sizeof (ARR)[0])
 
+/* Start a subprocess. Return its PID. */
+int start_process(const char *prog, char *const argv[]);
+
+/* Send desktop notification. `urgency`: 0~2; `timeout`: expiration timeout, ms. */
+int send_notification(const char *summary, const char *body, int urgency, unsigned int timeout);
+
 /* Read file contents. */
 size_t read_file(const char *path, void *buf, size_t buf_sz);
 

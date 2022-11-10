@@ -1,5 +1,6 @@
 #include <assert.h>
 #include <stdbool.h>
+#include <stdio.h>
 #include <string.h>
 
 #include "config.h"
@@ -60,6 +61,16 @@ void mod_battery(BarModuleContext *ctx)
 		bs.plugged  ? icon_plugged  :
 		ramp_select(icon_ramp_arr, array_length(icon_ramp_arr), percentage, 100);
 	module_string(ctx, MOD_BATTERY_FORMAT);
+
+#if MOD_BATTERY_LOW
+	static unsigned int last_percent = 100;
+	if (percentage <= MOD_BATTERY_LOW && last_percent > MOD_BATTERY_LOW) {
+		char message[64];
+		snprintf(message, sizeof message, "Battery at %u%%.", percentage);
+		send_notification("Low Battery", message, 2, 0);
+	}
+	last_percent = percentage;
+#endif /* MOD_BATTERY_LOW */
 
 	unsigned int new_interval;
 	if (bs.plugged || bs.percentage >= 20)

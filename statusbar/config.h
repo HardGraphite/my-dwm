@@ -26,6 +26,7 @@
 #define MOD_BATTERY_FILE_FULL          "/sys/class/power_supply/BAT0/energy_full"
 #define MOD_BATTERY_FILE_NOW           "/sys/class/power_supply/BAT0/energy_now"
 #define MOD_BATTERY_FILE_STATUS        "/sys/class/power_supply/BAT0/status"
+#define MOD_BATTERY_LOW                10
 
 #define MOD_CLOCK_FORMAT               "%s", time_str
 #define MOD_CLOCK_TIME_FMT             "%F %a %H:%M"
@@ -33,8 +34,8 @@
 #define MOD_CPU_FORMAT                 "%s%02u%%", cpu_icon, cpu_percent
 #define MOD_CPU_ICON_RAMP_ARR          {"\u25d4", "\u25d1", "\u25d5", "\u25cf"}
 
-#define MOD_MEMORY_FORMAT             "%s%02u%%", mem_icon, mem_percent
-#define MOD_MEMORY_ICON_RAMP_ARR      {"\ue266"}
+#define MOD_MEMORY_FORMAT              "%s%02u%%", mem_icon, mem_percent
+#define MOD_MEMORY_ICON_RAMP_ARR       {"\ue266"}
 
 #define MOD_THERMAL_FORMAT             "%s%u\u2103", thermal_icon, temperature
 #define MOD_THERMAL_ICON_RAMP_ARR      {"\uf2cb", "\uf2ca", "\uf2c9", "\uf2c8"}
