@@ -9,7 +9,8 @@
 /* List of enabled bar modules. Available modules are declared in "mods.h" */
 #define BAR_MOD_DEF_LIST { \
 	/* function      interval (sec) */ \
-	{ mod_sysinfo,               10 }, \
+	{ mod_memory,                20 }, \
+	{ mod_cpu,                   10 }, \
 	{ mod_thermal,        /*auto*/0 }, \
 	{ mod_battery,        /*auto*/0 }, \
 	{ mod_clock,          /*auto*/0 }, \
@@ -29,9 +30,11 @@
 #define MOD_CLOCK_FORMAT               "%s", time_str
 #define MOD_CLOCK_TIME_FMT             "%F %a %H:%M"
 
-#define MOD_SYSINFO_FORMAT             "%s%02u%% %s%02u%%", ram_icon, ram_percent, cpu_icon, cpu_percent
-#define MOD_SYSINFO_ICON_RAM_RAMP_ARR  {"\ue266"}
-#define MOD_SYSINFO_ICON_CPU_RAMP_ARR  {"\u25d4", "\u25d1", "\u25d5", "\u25cf"}
+#define MOD_CPU_FORMAT                 "%s%02u%%", cpu_icon, cpu_percent
+#define MOD_CPU_ICON_RAMP_ARR          {"\u25d4", "\u25d1", "\u25d5", "\u25cf"}
+
+#define MOD_MEMORY_FORMAT             "%s%02u%%", mem_icon, mem_percent
+#define MOD_MEMORY_ICON_RAMP_ARR      {"\ue266"}
 
 #define MOD_THERMAL_FORMAT             "%s%u\u2103", thermal_icon, temperature
 #define MOD_THERMAL_ICON_RAMP_ARR      {"\uf2cb", "\uf2ca", "\uf2c9", "\uf2c8"}
