@@ -19,6 +19,11 @@ before entering the handler loop.
 - [systray](https://dwm.suckless.org/patches/systray/)
 (dwm-systray-6.3.diff), a simple system tray implementation.
 
+### Other modifications
+
+- Add gaps both between client windows and between client window and screen frame.
+Hide the gap if there is only one client window on screen.
+
 ## status bar
 
 A status bar for dwm.
